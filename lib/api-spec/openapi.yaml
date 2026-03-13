@@ -1,0 +1,510 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: AfyaLink API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: patients
+    description: Patient management
+  - name: consultations
+    description: Consultation and triage management
+  - name: referrals
+    description: Referral tracking
+  - name: dashboard
+    description: Supervisor dashboard
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /patients:
+    get:
+      operationId: listPatients
+      tags: [patients]
+      summary: List all patients
+      parameters:
+        - name: chpId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Patient"
+    post:
+      operationId: createPatient
+      tags: [patients]
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePatientRequest"
+      responses:
+        "201":
+          description: Patient created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  /patients/{id}:
+    get:
+      operationId: getPatient
+      tags: [patients]
+      summary: Get patient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+    patch:
+      operationId: updatePatient
+      tags: [patients]
+      summary: Update patient status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePatientRequest"
+      responses:
+        "200":
+          description: Updated patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  /consultations:
+    get:
+      operationId: listConsultations
+      tags: [consultations]
+      summary: List consultations
+      parameters:
+        - name: patientId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of consultations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Consultation"
+    post:
+      operationId: createConsultation
+      tags: [consultations]
+      summary: Create a new consultation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConsultationRequest"
+      responses:
+        "201":
+          description: Consultation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+
+  /referrals:
+    get:
+      operationId: listReferrals
+      tags: [referrals]
+      summary: List referrals
+      responses:
+        "200":
+          description: List of referrals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Referral"
+    post:
+      operationId: createReferral
+      tags: [referrals]
+      summary: Create a referral
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReferralRequest"
+      responses:
+        "201":
+          description: Referral created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Referral"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      parameters:
+        - name: chpId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /dashboard/sync:
+    post:
+      operationId: syncToEchis
+      tags: [dashboard]
+      summary: Sync data to eCHIS
+      responses:
+        "200":
+          description: Sync result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncResult"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Patient:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        age:
+          type: integer
+        sex:
+          type: string
+          enum: [male, female, other]
+        location:
+          type: string
+        chpId:
+          type: string
+        isRefugee:
+          type: boolean
+        qrCode:
+          type: string
+          nullable: true
+        symptomsDescription:
+          type: string
+          nullable: true
+        triageLevel:
+          type: string
+          enum: [normal, urgent, emergency, pregnancy_danger]
+          nullable: true
+        triageConfidence:
+          type: number
+          nullable: true
+        status:
+          type: string
+          enum: [pending, queued_for_sync, synced, referred]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - age
+        - sex
+        - location
+        - chpId
+        - isRefugee
+        - status
+        - createdAt
+        - updatedAt
+
+    CreatePatientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+        sex:
+          type: string
+          enum: [male, female, other]
+        location:
+          type: string
+        chpId:
+          type: string
+        isRefugee:
+          type: boolean
+        symptomsDescription:
+          type: string
+          nullable: true
+        triageLevel:
+          type: string
+          enum: [normal, urgent, emergency, pregnancy_danger]
+          nullable: true
+        triageConfidence:
+          type: number
+          nullable: true
+      required:
+        - name
+        - age
+        - sex
+        - location
+        - chpId
+        - isRefugee
+
+    UpdatePatientRequest:
+      type: object
+      properties:
+        symptomsDescription:
+          type: string
+          nullable: true
+        triageLevel:
+          type: string
+          enum: [normal, urgent, emergency, pregnancy_danger]
+          nullable: true
+        triageConfidence:
+          type: number
+          nullable: true
+        status:
+          type: string
+          enum: [pending, queued_for_sync, synced, referred]
+        qrCode:
+          type: string
+          nullable: true
+
+    Consultation:
+      type: object
+      properties:
+        id:
+          type: string
+        patientId:
+          type: string
+        chpId:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        hasVideo:
+          type: boolean
+        hasSmsAlert:
+          type: boolean
+        syncStatus:
+          type: string
+          enum: [pending, sent, failed]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - patientId
+        - chpId
+        - hasVideo
+        - hasSmsAlert
+        - syncStatus
+        - createdAt
+
+    CreateConsultationRequest:
+      type: object
+      properties:
+        patientId:
+          type: string
+        chpId:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        hasVideo:
+          type: boolean
+        hasSmsAlert:
+          type: boolean
+      required:
+        - patientId
+        - chpId
+        - hasVideo
+        - hasSmsAlert
+
+    Referral:
+      type: object
+      properties:
+        id:
+          type: string
+        patientId:
+          type: string
+        chpId:
+          type: string
+        facilityName:
+          type: string
+        facilityLevel:
+          type: string
+        distanceKm:
+          type: number
+        county:
+          type: string
+        urgency:
+          type: string
+          enum: [routine, urgent, emergency]
+        status:
+          type: string
+          enum: [pending, in_transit, arrived, completed]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - patientId
+        - chpId
+        - facilityName
+        - facilityLevel
+        - distanceKm
+        - county
+        - urgency
+        - status
+        - createdAt
+
+    CreateReferralRequest:
+      type: object
+      properties:
+        patientId:
+          type: string
+        chpId:
+          type: string
+        facilityName:
+          type: string
+        facilityLevel:
+          type: string
+        distanceKm:
+          type: number
+        county:
+          type: string
+        urgency:
+          type: string
+          enum: [routine, urgent, emergency]
+      required:
+        - patientId
+        - chpId
+        - facilityName
+        - facilityLevel
+        - distanceKm
+        - county
+        - urgency
+
+    DashboardStats:
+      type: object
+      properties:
+        totalPatients:
+          type: integer
+        urgentCases:
+          type: integer
+        emergencyCases:
+          type: integer
+        pregnancyDangerCases:
+          type: integer
+        referralsMade:
+          type: integer
+        pendingSync:
+          type: integer
+        syncedToday:
+          type: integer
+        countySummaries:
+          type: array
+          items:
+            $ref: "#/components/schemas/CountySummary"
+      required:
+        - totalPatients
+        - urgentCases
+        - emergencyCases
+        - pregnancyDangerCases
+        - referralsMade
+        - pendingSync
+        - syncedToday
+        - countySummaries
+
+    CountySummary:
+      type: object
+      properties:
+        county:
+          type: string
+        urgentCases:
+          type: integer
+        totalCases:
+          type: integer
+      required:
+        - county
+        - urgentCases
+        - totalCases
+
+    SyncResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        recordsSynced:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - success
+        - message
+        - recordsSynced
+        - timestamp
