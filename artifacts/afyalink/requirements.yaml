@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For smooth mobile-app like page transitions and list animations"
+  "qrcode.react": "For generating the simulated refugee QR code"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes without style conflicts"
+  "date-fns": "For formatting dates nicely in the UI"
+  "react-hook-form": "For robust form handling in triage and referrals"
+  "@hookform/resolvers": "For Zod validation integration with forms"
+
+images:
+  - path: "artifacts/afyalink/public/images/logo-icon.png"
+    description: "Minimalist medical cross logo combined with a map pin, deep green and red colors, transparent background, flat clean vector style"
+    aspect_ratio: "1:1"
+  - path: "artifacts/afyalink/public/images/chp-illustration.png"
+    description: "Flat vector illustration of an African community health worker smiling, wearing a green vest, holding a tablet, simple clean shapes, medical context"
+    aspect_ratio: "1:1"
+
+notes:
+  - App simulates an offline-first mobile app for Kenyan CHPs.
+  - UI is restricted to a ~480px wide mobile container centered on screen for desktop viewers.
+  - Data is fetched from backend API but UI explicitly claims 'Offline Mode' as requested.
