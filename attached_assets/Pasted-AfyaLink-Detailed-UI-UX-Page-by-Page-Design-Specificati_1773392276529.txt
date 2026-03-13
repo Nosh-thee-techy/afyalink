@@ -1,0 +1,108 @@
+AfyaLink – Detailed UI/UX Page-by-Page Design Specification
+Version 1.0 – Hackathon MVP
+Theme: Kenyan National Colors (Green #00A651 primary, Red #E30613 for urgent alerts, White background)
+Design System: Material 3 (clean cards, large touch targets, high contrast)
+Typography: Google Sans or Roboto – minimum 18sp titles, 16sp body (sunlight-readable in ASAL counties)
+Icons: Material Icons + simple health symbols
+Offline Indicator: Small green “✓ Offline Mode” badge in top-right on every screen
+Bottom Navigation Bar: Always present (5 tabs) – Home | Queue | Consult | Reports | Settings
+Language: Default Swahili (with English/Somali/Arabic toggle in Settings)
+Accessibility: High contrast (AA+), large tappable areas (48dp minimum), voice-over friendly labels  This is built exactly for Kenyan CHPs and refugee caregivers: simple, no clutter, works in bright sun or low light, and feels familiar to eCHIS users (lists + cards + sync button).1. Splash ScreenPurpose: Instant branding + loading check (offline DB ready).
+Layout:  Full-screen background: subtle Kenya flag gradient (green top, white middle, thin red bottom).  
+Centered large logo: “AfyaLink” in bold white 48sp + small green heart + stethoscope icon.  
+Subtitle (24sp): “Huduma ya Afya Bila Mtandao” (Health Service Offline).  
+Bottom: “For CHPs & Refugee Camps” + small Kenya map outline.  
+Loading spinner (green) only if Hive is initializing (1–2 sec).
+Features: Auto-navigates to Login after 2 seconds.
+UI Details: No buttons. High contrast. Works 100% offline.
+Hackathon note: Use AnimatedOpacity for smooth fade to Login.
+
+2. Login ScreenPurpose: Quick CHP login + refugee caregiver mode switch.
+Layout:  Top App Bar: “Karibu AfyaLink” (Welcome) + Kenya flag icon (top-right).  
+Centered card (white with green border):  Text field: “CHP ID” (e.g. CHP-KE-001) – large 20sp input.  
+Optional: “Caregiver Mode” toggle switch (for Dadaab mothers – simpler UI).  
+Big green “Ingia” (Login) button (full width, 56dp height).
+Bottom text: “Hakuna Mtandao? Bado inafanya kazi” (No internet? Still works).
+Features:  
+Mock validation (any 8-char ID works for demo).  
+Saves to Hive + flutter_secure_storage.  
+Language selector top-right (flag icons).
+UI Details: Green primary button, red “Emergency Login” link for urgent cases. Large tap areas.
+Offline: Fully functional.
+
+3. Home / Patient Queue Dashboard (Main Screen)Purpose: Daily overview – this is where CHPs spend 80% of time.
+Layout (Material 3):  Top App Bar: “Queue Leo” (Today’s Queue) + user avatar (CHP-KE-001) + offline badge.  
+Body: Scrollable list of Patient Cards (white cards with green left border).
+Each card:  Left: Photo placeholder or initials (circle).  
+Middle: Name (e.g. “Amina Hassan, 28”), Age, Location (e.g. “Dadaab Block 4”).  
+Right: Status badge (Green “Normal”, Yellow “Urgent”, Red “Emergency”).
+FAB (floating green + icon): “+ Mgonjwa Mpya” (New Patient).  
+Bottom Nav: Active on “Home”.
+Features:  
+Pull-to-refresh (simulates sync).  
+Filter chips: All | Urgent | Pregnancy | Refugee.  
+Tap card → opens Symptom Checker directly.
+UI Details: Cards have subtle shadow, large text (18sp names), red dot for unsynced items. Shows “12 queued today” counter at top.
+
+4. Symptom Checker Screen (New Patient Flow)Purpose: Capture symptoms fast in the field.
+Layout:  Top App Bar: “Angalia Dalili” (Check Symptoms) + patient name.  
+Body (stepper style):  Large camera button (green circle, 120dp) – “Piga Picha ya Dalili” (Take Photo of Symptom).  Live camera preview with overlay guides (“Weka mkono au tumbo katikati”).
+Below: Voice note recorder button (red mic, 60 sec limit).  
+Text field (optional): “Maelezo ya ziada” (Additional notes in Swahili).
+Bottom bar: “Next – Triage” (green) + “Save Draft”.
+Features:  
+Camera integration (photo saved to Hive).  
+Toggle for Refugee Anonymous Mode (hides name).
+UI Details: Huge buttons, progress bar at top (Step 1/3), high-contrast camera UI for outdoor use.
+
+5. AI Triage Results & Consultation Recording ScreenPurpose: Instant AI decision + record specialist message.
+Layout:  Top: Big result banner (color-coded):  Green: “Normal – Fuata ushauri”  
+Yellow: “Urgent – Tazama leo”  
+Red: “Emergency – Piga simu sasa” (92% confidence shown).
+Middle card: AI explanation in Swahili + English toggle (“Dalili ya hatari ya ujauzito”).  
+Large record button: “Rekodi Video kwa Daktari” (3 min max) – shows waveform while recording.  
+Preview player (video_player) of recorded file.  
+Bottom: “Queuing for Sync” status + SMS fallback button (“Tuma SMS Badala yake”).
+Features:  
+TensorFlow Lite runs locally (model shows “Rash”, “Breathing Difficulty”, “Pregnancy Danger”).  
+Store-and-forward: auto-queues video/metadata.
+UI Details: Urgent results flash red subtly. Progress bar for recording.
+
+6. Referral & Management ScreenPurpose: Finalize action and track referral.
+Layout:  Top App Bar: “Rejeleo” (Referral).  
+Body: Pre-filled form (Material 3 text fields + dropdowns):  Nearest facility (offline dropdown: “Turkana County Hospital”, “Dadaab UNHCR Clinic”).  
+Distance & direction (simple text).  
+Reason (auto-filled from AI).  
+Date & time picker.
+QR Code generator button: “Unda QR ya Mgonjwa” (anonymous refugee record).  
+Bottom: Two big buttons – “Tuma Rejeleo” (green) + “Rudi Queue”.
+Features:  
+Referral status tracker (Queued → Sent → Seen).  
+Print/SMS referral form option.
+UI Details: Green checkmarks for completed fields, map snippet (static offline image of county).
+
+7. Supervisor Dashboard (Reports Tab)Purpose: County/UNHCR view when online (CHPs switch here too).
+Layout:  Top App Bar: “Ripoti” (Reports) + date range.  
+Body:  Summary cards (4 green cards): Today’s Cases, Urgent, Synced, Referrals.  
+Simple bar chart (Flutter chart or placeholder) – “Urgent Cases by County”.  
+List of recent queued consultations (anonymized).
+Export button (top-right): “Export to eCHIS” (mock success toast).
+Features:  
+Only visible when connectivity_plus detects online.  
+Aggregated stats only (no patient names).
+UI Details: Clean dashboard style, green/red color coding.
+
+8. Settings ScreenPurpose: Quick customisation.
+Layout: Simple list:  Language (Swahili / English / Somali / Arabic).  
+Offline Storage Used (e.g. “1.2 GB / 8 GB”).  
+Sync Now button.  
+Logout.  
+About: “AfyaLink v1.0 – Built for Kenya 2026”.
+UI Details: Clean list tiles with icons.
+
+Overall App Polish (Every Screen)Offline Mode Visual: Top bar turns slightly grey when offline + “Inafanya kazi bila mtandao” badge.  
+Loading States: Skeleton loaders for lists.  
+Error Handling: Friendly Swahili messages (“Hakuna mtandao, data itatuma baadaye”).  
+Kenyan Touch: Every screen footer has tiny “ Supported by CHPs” line.  
+Dark Mode Optional: Auto-detects for night use in camps.
+
