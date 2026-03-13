@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AfyaLink"
+version = "1.0.0"
+id = "artifacts/afyalink"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 24719
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/afyalink run dev"
+
+[services.env]
+PORT = "24719"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/afyalink", "run", "build"]
+publicDir = "artifacts/afyalink/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

@@ -1,0 +1,73 @@
+You are an expert senior Flutter developer who has built multiple offline-first humanitarian health apps for Kenya (UNICEF, Kenya Red Cross, UNHCR partners). Build the complete hackathon-ready MVP of "AfyaLink" – an Offline Telemedicine + Symptom Checker Platform for Kenyan Community Health Promoters (CHPs) and refugees in ASAL counties and Dadaab/Kakuma camps.
+
+Project requirements (follow exactly, no Firebase, no internet required for core use):
+
+TECH STACK (add these exact versions to pubspec.yaml):
+- Flutter latest stable
+- hive: ^2.2.3 + hive_flutter
+- tflite_flutter: ^0.12.1 (for on-device AI)
+- camera: ^0.10.6
+- video_player: ^2.9.2
+- connectivity_plus: ^6.0.3
+- workmanager: ^0.5.2
+- telephony: ^0.3.0
+- intl: ^0.19.0
+- go_router: ^14.0.0
+- flutter_secure_storage: ^9.2.2 (optional for login)
+
+Core Features to implement (all 100% offline-first):
+
+1. Splash + CHP Login Screen
+   - Simple login with mock CHP ID (e.g. "CHP-KE-001")
+   - Save to Hive + secure storage
+   - Support Swahili default (use intl)
+
+2. Offline Patient Queue Screen (main home)
+   - List of pending patients (Hive box)
+   - Add new patient button
+   - Each card shows name, age, symptoms summary, status
+
+3. Symptom Checker + AI Triage Screen
+   - Camera button to take photo of symptom (rash, swelling, breathing, pregnancy belly, etc.)
+   - Load a TFLite model from assets (create placeholder model folder)
+   - On-device classification with 4 classes: Normal / Urgent / Emergency / Pregnancy Danger
+   - Show confidence score + recommended action in Swahili/English
+   - Option to add voice note
+
+4. Store-and-Forward Video Consultation
+   - Record video or voice note (max 3 min)
+   - Save video file + metadata to Hive
+   - "Send when online" button (use connectivity_plus + workmanager to simulate upload)
+   - SMS fallback option using telephony package (mock SMS)
+
+5. Referral & Management Screen
+   - Auto-generate referral form for nearest facility (Turkana, Garissa, Dadaab examples)
+   - Track referral status
+   - Refugee mode: generate anonymous QR code patient record (using qr_flutter)
+
+6. Supervisor Dashboard (simple tab)
+   - When online: show mock summary ("Today: 12 urgent cases in Dadaab")
+   - Export anonymized data button (print to console for hackathon demo)
+
+7. Multilingual Support
+   - Default: Swahili
+   - Buttons for English, Somali, Arabic (use intl + simple JSON files)
+
+8. Kenya-Specific Details
+   - Theme: Green/white Kenyan colors, Material 3
+   - Include eCHIS mock sync button (when online, just show "Synced to eCHIS")
+   - Add Kenya flag + "For CHPs in ASAL & Refugee Camps" subtitle
+
+Additional instructions:
+- Use go_router for clean navigation
+- Use ValueListenableBuilder + Hive for all lists
+- Make UI beautiful, simple, large fonts (CHPs use phones in sunlight)
+- Add helpful comments in code for hackathon judges
+- Create assets folder with placeholder tflite model (you can generate a dummy one)
+- Include a README.md with "How to demo for judges" section
+- Make the app run perfectly offline on first launch
+- Use Riverpod or simple setState (your choice for speed)
+
+Build the entire project structure now: create all folders, pubspec.yaml, all Dart files, localization files, assets, and make it ready to run with "flutter run". Start generating files one by one and tell me when each major screen is complete so I can test immediately.
+
+Begin now.
